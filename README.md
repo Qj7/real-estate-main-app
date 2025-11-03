@@ -26,25 +26,11 @@
 - **Reverse Proxy**: Nginx
 - **Containerization**: Docker + Docker Compose
 
-## Быстрый старт
-
-### Требования
-
-- Node.js >= 18
-- Docker & Docker Compose
-- PostgreSQL (или использовать Docker)
-
 ### Разработка
 
 ```bash
-# Установка зависимостей
-npm install
-
-# Запуск в режиме разработки
-npm run dev
-
 # Запуск через Docker
-docker-compose up -d
+docker compose -f docker-compose.dev.yml up
 ```
 
 ### Миграции базы данных
@@ -95,17 +81,3 @@ JWT_REFRESH_SECRET=your-refresh-secret-key
 - `events` - события аналитики
 - `links` - ссылки и кампании
 - `audit_log` - лог действий администраторов
-
-## API Endpoints (все на порту 3000)
-
-После запуска все сервисы доступны через единый порт **3000**:
-
-- **MiniApp**: `http://localhost:3000/miniapp`
-- **Admin Panel**: `http://localhost:3000/admin`
-- **Public API**: `http://localhost:3000/api/v1`
-- **Events API**: `http://localhost:3000/events/api/v1`
-- **Health Check**: `http://localhost:3000/health`
-
-## Лицензия
-
-Private
