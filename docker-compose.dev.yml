@@ -1,0 +1,175 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: real-estate-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-real_estate}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infrastructure/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - real-estate-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis (for caching and rate limiting)
+  redis:
+    image: redis:7-alpine
+    container_name: real-estate-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - real-estate-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MinIO (S3-compatible storage)
+  minio:
+    image: minio/minio:latest
+    container_name: real-estate-minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - real-estate-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  # Public API Service (Dev Mode)
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile.dev
+    container_name: real-estate-api
+    environment:
+      NODE_ENV: development
+      DB_HOST: postgres
+      DB_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-real_estate}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-real_estate}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-key}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-dev-refresh-secret-key}
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      PORT: 3000
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+    # Port exposed directly in dev
+    ports:
+      - "3001:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - real-estate-network
+    volumes:
+      - ./apps/api:/app
+      - /app/node_modules
+
+  # Events/Analytics API Service (Dev Mode)
+  events-api:
+    build:
+      context: ./apps/events-api
+      dockerfile: Dockerfile.dev
+    container_name: real-estate-events-api
+    environment:
+      NODE_ENV: development
+      DB_HOST: postgres
+      DB_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-real_estate}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-real_estate}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      PORT: 3000
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+    # Port exposed directly in dev
+    ports:
+      - "3002:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - real-estate-network
+    volumes:
+      - ./apps/events-api:/app
+      - /app/node_modules
+
+  # MiniApp Frontend (Dev Mode)
+  miniapp-front:
+    build:
+      context: ./apps/miniapp-front
+      dockerfile: Dockerfile.dev
+    container_name: real-estate-miniapp-front
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001/api/v1}
+      NEXT_PUBLIC_EVENTS_API_URL: ${NEXT_PUBLIC_EVENTS_API_URL:-http://localhost:3002/api/v1}
+    # Port exposed directly in dev
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+      - events-api
+    networks:
+      - real-estate-network
+    volumes:
+      - ./apps/miniapp-front:/app
+      - /app/node_modules
+      - /app/.next
+
+  # Admin Frontend (Dev Mode)
+  admin-front:
+    build:
+      context: ./apps/admin-front
+      dockerfile: Dockerfile.dev
+    container_name: real-estate-admin-front
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001/api/v1}
+    # Port exposed directly in dev
+    ports:
+      - "3003:3000"
+    depends_on:
+      - api
+    networks:
+      - real-estate-network
+    volumes:
+      - ./apps/admin-front:/app
+      - /app/node_modules
+      - /app/.next
+
+volumes:
+  postgres_data:
+  minio_data:
+
+networks:
+  real-estate-network:
+    driver: bridge
+
