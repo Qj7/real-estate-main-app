@@ -12,7 +12,7 @@ jobs:
   deploy-railway:
     runs-on: ubuntu-latest
     if: ${{ secrets.RAILWAY_TOKEN != '' }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -36,7 +36,7 @@ jobs:
   deploy-render:
     runs-on: ubuntu-latest
     if: ${{ secrets.RENDER_API_KEY != '' }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -50,7 +50,7 @@ jobs:
   deploy-flyio:
     runs-on: ubuntu-latest
     if: ${{ secrets.FLY_API_TOKEN != '' }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

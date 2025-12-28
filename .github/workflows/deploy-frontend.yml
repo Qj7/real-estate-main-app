@@ -1,44 +1,23 @@
-name: Deploy Frontend
+name: Deploy Frontend (Alternative)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'frontend/**'
-      - '.github/workflows/deploy-frontend.yml'
   workflow_dispatch:
 
 jobs:
-  deploy:
+  deploy-railway:
     runs-on: ubuntu-latest
+    if: ${{ secrets.RAILWAY_FRONTEND_TOKEN != '' }}
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
 
-      - name: Install dependencies
-        working-directory: ./frontend
-        run: npm ci
-
-      - name: Build
-        working-directory: ./frontend
-        run: npm run build
+      - name: Deploy to Railway
+        run: railway up --service ${{ secrets.RAILWAY_FRONTEND_SERVICE_ID }}
         env:
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api' }}
-
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./frontend
-          scope: ${{ secrets.VERCEL_ORG_ID }}
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_FRONTEND_TOKEN }}
+        working-directory: ./frontend
 
