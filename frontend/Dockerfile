@@ -12,28 +12,24 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Build application
+# Build application (creates static export in 'out' directory)
+ARG NEXT_PUBLIC_API_URL=http://localhost:3001/api
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
 RUN npm run build
 
-# Production stage
-FROM node:18-alpine
+# Production stage - use nginx for static files
+FROM nginx:alpine
 
-WORKDIR /app
+# Copy static files from build
+COPY --from=builder /app/out /usr/share/nginx/html
 
-# Copy package files
-COPY package*.json ./
-
-# Install production dependencies only
-RUN npm ci --only=production
-
-# Copy built application from builder
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.js ./next.config.js
+# Copy nginx configuration (optional)
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port
-EXPOSE 3000
+EXPOSE 80
 
-# Start application
-CMD ["npm", "run", "start"]
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
 
