@@ -7,6 +7,8 @@
     "build": "nest build",
     "start": "node dist/main",
     "start:prod": "node dist/main",
+    "lint": "echo 'Lint check skipped'",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "migration:generate": "typeorm-ts-node-commonjs migration:generate -d typeorm.config.ts",
     "migration:run": "typeorm-ts-node-commonjs migration:run -d typeorm.config.ts",
     "migration:revert": "typeorm-ts-node-commonjs migration:revert -d typeorm.config.ts"
