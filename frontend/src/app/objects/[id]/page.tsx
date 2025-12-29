@@ -11,6 +11,13 @@ import { usePlatform } from '@/hooks/useTelegram';
 import { MatterportViewer } from '@/components/objects/MatterportViewer';
 import { formatPrice, formatDate } from '@/lib/utils';
 
+// For static export, we need to provide generateStaticParams
+// Since we can't pre-generate all pages, we return empty array
+// This will create a fallback page that handles routing client-side
+export async function generateStaticParams() {
+  return [];
+}
+
 export default function ObjectDetailPage() {
   const params = useParams();
   const router = useRouter();

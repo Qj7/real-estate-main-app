@@ -16,8 +16,8 @@ COPY . .
 ARG NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
-# Build with verbose output for debugging
-RUN npm run build 2>&1 || (echo "Build failed, checking for errors..." && exit 1)
+# Build application
+RUN npm run build || (echo "=== Build Error Details ===" && cat .next/trace 2>/dev/null || echo "No trace file" && exit 1)
 
 # Production stage - use nginx for static files
 FROM nginx:alpine
