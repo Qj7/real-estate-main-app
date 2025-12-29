@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { MapPin, Bed, Square, Heart, ArrowLeft, Phone, Mail } from 'lucide-react';
@@ -11,7 +11,7 @@ import { usePlatform } from '@/hooks/useTelegram';
 import { MatterportViewer } from '@/components/objects/MatterportViewer';
 import { formatPrice } from '@/lib/utils';
 
-export default function ObjectDetailPage() {
+function ObjectDetailContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const objectId = searchParams.get('id');
@@ -296,3 +296,18 @@ export default function ObjectDetailPage() {
   );
 }
 
+export default function ObjectDetailPage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="animate-pulse space-y-4">
+          <div className="h-96 bg-gray-200 rounded-lg" />
+          <div className="h-8 bg-gray-200 rounded w-3/4" />
+          <div className="h-4 bg-gray-200 rounded w-1/2" />
+        </div>
+      </div>
+    }>
+      <ObjectDetailContent />
+    </Suspense>
+  );
+}

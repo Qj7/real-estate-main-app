@@ -1,29 +1,45 @@
-import type { Metadata } from 'next'
-import Script from 'next/script'
+'use client';
+
+import { useEffect } from 'react';
 import './globals.css'
 import { TelegramProvider } from '@/components/TelegramProvider'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { Header } from '@/components/layout/Header'
-
-export const metadata: Metadata = {
-  title: 'Real Estate App',
-  description: 'Real Estate Mini App - Browse properties and virtual tours',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
-}
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  useEffect(() => {
+    // Set document title and meta tags
+    document.title = 'Real Estate App';
+    
+    // Set viewport meta tag
+    let viewport = document.querySelector('meta[name="viewport"]');
+    if (!viewport) {
+      viewport = document.createElement('meta');
+      viewport.setAttribute('name', 'viewport');
+      document.head.appendChild(viewport);
+    }
+    viewport.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
+    
+    // Set description meta tag
+    let description = document.querySelector('meta[name="description"]');
+    if (!description) {
+      description = document.createElement('meta');
+      description.setAttribute('name', 'description');
+      document.head.appendChild(description);
+    }
+    description.setAttribute('content', 'Real Estate Mini App - Browse properties and virtual tours');
+  }, []);
+
   return (
     <html lang="ru">
       <head>
+        <meta charSet="utf-8" />
         {/* Telegram WebApp SDK */}
-        <Script
-          src="https://telegram.org/js/telegram-web-app.js"
-          strategy="beforeInteractive"
-        />
+        <script src="https://telegram.org/js/telegram-web-app.js" async />
       </head>
       <body className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <ThemeProvider>
