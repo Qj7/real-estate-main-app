@@ -26,7 +26,7 @@ export function ObjectCard({ object, onFavoriteToggle }: ObjectCardProps) {
   const mainImage = object.images?.[0] || 'https://via.placeholder.com/800x600?text=Property+Image';
 
   return (
-    <Link href={`/objects/${object.id}`}>
+    <Link href={`/objects/detail?id=${object.id}`}>
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
         <div className="relative h-48 w-full">
           <Image
