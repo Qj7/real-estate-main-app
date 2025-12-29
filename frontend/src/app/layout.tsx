@@ -1,14 +1,11 @@
-import type { Metadata } from 'next'
-import Script from 'next/script'
 import './globals.css'
 import { TelegramProvider } from '@/components/TelegramProvider'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { Header } from '@/components/layout/Header'
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'Real Estate App',
   description: 'Real Estate Mini App - Browse properties and virtual tours',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
 }
 
 export default function RootLayout({
@@ -19,11 +16,9 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
         {/* Telegram WebApp SDK */}
-        <Script
-          src="https://telegram.org/js/telegram-web-app.js"
-          strategy="beforeInteractive"
-        />
+        <script src="https://telegram.org/js/telegram-web-app.js" async />
       </head>
       <body className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <ThemeProvider>
