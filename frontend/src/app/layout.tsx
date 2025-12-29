@@ -14,7 +14,7 @@ export default function RootLayout({
   useEffect(() => {
     // Set document title and meta tags
     document.title = 'Real Estate App';
-    
+
     // Set viewport meta tag
     let viewport = document.querySelector('meta[name="viewport"]');
     if (!viewport) {
@@ -23,7 +23,7 @@ export default function RootLayout({
       document.head.appendChild(viewport);
     }
     viewport.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
-    
+
     // Set description meta tag
     let description = document.querySelector('meta[name="description"]');
     if (!description) {
