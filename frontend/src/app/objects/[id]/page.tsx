@@ -11,11 +11,6 @@ import { usePlatform } from '@/hooks/useTelegram';
 import { MatterportViewer } from '@/components/objects/MatterportViewer';
 import { formatPrice } from '@/lib/utils';
 
-// Required for static export - return empty array for dynamic routes
-export function generateStaticParams() {
-  return [];
-}
-
 export default function ObjectDetailPage() {
   const params = useParams();
   const router = useRouter();

@@ -9,6 +9,9 @@ const nextConfig = {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api',
   },
   trailingSlash: true,
+  // Skip dynamic routes during static export
+  // They will be handled client-side via client-side routing
+  skipTrailingSlashRedirect: true,
 }
 
 module.exports = nextConfig
