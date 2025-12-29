@@ -20,6 +20,8 @@ const nextConfig = {
   },
   // Disable features not compatible with static export
   trailingSlash: true,
+  // Skip dynamic routes during build - they will be handled client-side
+  skipTrailingSlashRedirect: true,
   // Если репозиторий не в корне, раскомментируйте:
   // basePath: process.env.GITHUB_REPOSITORY ? `/${process.env.GITHUB_REPOSITORY.split('/')[1]}` : '',
 }
