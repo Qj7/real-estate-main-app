@@ -9,12 +9,10 @@ import { objectsApi, eventsApi } from '@/lib/api';
 import { useAppStore } from '@/store/useAppStore';
 import { usePlatform } from '@/hooks/useTelegram';
 import { MatterportViewer } from '@/components/objects/MatterportViewer';
-import { formatPrice, formatDate } from '@/lib/utils';
+import { formatPrice } from '@/lib/utils';
 
-// For static export, we need to provide generateStaticParams
-// Since we can't pre-generate all pages, we return empty array
-// This will create a fallback page that handles routing client-side
-export async function generateStaticParams() {
+// Required for static export - return empty array for dynamic routes
+export function generateStaticParams() {
   return [];
 }
 

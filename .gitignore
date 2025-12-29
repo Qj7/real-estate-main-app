@@ -27,10 +27,3 @@ yarn-error.log*
 # OS
 .DS_Store
 Thumbs.db
-
-# Turbo
-.turbo/
-
-# Temporary files
-*.tmp
-package.json.tmp

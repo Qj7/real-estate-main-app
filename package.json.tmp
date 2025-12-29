@@ -1,0 +1,24 @@
+{
+    "name":  "real-estate-monorepo",
+    "version":  "1.0.0",
+    "private":  true,
+    "description":  "Real Estate Mini App ecosystem with Admin Panel",
+    "workspaces":  null,
+    "scripts":  {
+                    "dev":  "turbo run dev",
+                    "build":  "turbo run build",
+                    "lint":  "turbo run lint",
+                    "test":  "turbo run test",
+                    "clean":  "turbo run clean",
+                    "format":  "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\""
+                },
+    "devDependencies":  {
+                            "turbo":  "^1.10.0",
+                            "prettier":  "^3.0.0",
+                            "typescript":  "^5.2.0"
+                        },
+    "engines":  {
+                    "node":  "\u003e=18.0.0",
+                    "npm":  "\u003e=9.0.0"
+                }
+}
