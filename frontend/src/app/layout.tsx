@@ -14,7 +14,7 @@ export default function RootLayout({
   useEffect(() => {
     // Set document title
     document.title = 'Real Estate App';
-    
+
     // Set meta description
     const metaDescription = document.querySelector('meta[name="description"]');
     if (!metaDescription) {
