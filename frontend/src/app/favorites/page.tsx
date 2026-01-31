@@ -8,9 +8,13 @@ import { useAppStore } from '@/store/useAppStore';
 import { Heart } from 'lucide-react';
 
 export default function FavoritesPage() {
-  const favorites = useAppStore((state) => state.favorites);
-  const [objects, setObjects] = useState<Object[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { favorites, getCachedObjects, setObjectsCache } = useAppStore();
+  const [objects, setObjects] = useState<Object[]>(() => {
+    if (favorites.length === 0) return [];
+    const cached = getCachedObjects();
+    return cached ? cached.filter((obj) => favorites.includes(obj.id)) : [];
+  });
+  const [loading, setLoading] = useState(favorites.length > 0 && !getCachedObjects());
 
   useEffect(() => {
     loadFavorites();
@@ -23,17 +27,22 @@ export default function FavoritesPage() {
       return;
     }
 
+    const cached = getCachedObjects();
+    if (cached?.length) {
+      const favoriteObjects = cached.filter((obj) => favorites.includes(obj.id));
+      setObjects(favoriteObjects);
+      setLoading(false);
+    }
+
     try {
-      setLoading(true);
-      // Load all objects and filter by favorites
+      if (!cached?.length) setLoading(true);
       const response = await objectsApi.getAll();
       const allObjects = response.data || [];
-      const favoriteObjects = allObjects.filter((obj: Object) =>
-        favorites.includes(obj.id)
-      );
+      setObjectsCache(allObjects);
+      const favoriteObjects = allObjects.filter((obj: Object) => favorites.includes(obj.id));
       setObjects(favoriteObjects);
-    } catch (error) {
-      console.error('Failed to load favorites:', error);
+    } catch {
+      if (!getCachedObjects()?.length) setObjects([]);
     } finally {
       setLoading(false);
     }

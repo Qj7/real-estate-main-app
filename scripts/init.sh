@@ -50,6 +50,10 @@ REDIS_URL=redis://redis:6379
 NEXT_PUBLIC_API_URL=http://localhost:3001
 NEXT_PUBLIC_EVENTS_API_URL=http://localhost:3002
 
+# Telegram Mini App (optional)
+MINI_APP_URL=
+TELEGRAM_BOT_TOKEN=
+
 # Environment
 NODE_ENV=development
 EOF

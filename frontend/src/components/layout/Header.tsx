@@ -38,6 +38,7 @@ export function Header() {
                   <Link
                     key={item.href}
                     href={item.href}
+                    prefetch={true}
                     className={`flex items-center space-x-1 px-4 py-2 rounded-lg transition-colors ${
                       isActive
                         ? 'bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300'
@@ -69,6 +70,7 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  prefetch={true}
                   className={`flex flex-col items-center space-y-1 px-3 py-2 rounded-lg transition-colors ${
                     isActive ? 'text-primary-600 dark:text-primary-400' : 'text-gray-600 dark:text-gray-300'
                   }`}

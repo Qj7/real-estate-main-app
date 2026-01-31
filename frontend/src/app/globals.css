@@ -22,6 +22,59 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Light Theme - Color Palette Variables */
+:root {
+  /* Primary Colors from Palette */
+  --color-primary-orange: #E9AD74;
+  --color-primary-beige: #EAD8A7;
+  --color-primary-teal: #A7DAD3;
+
+  /* Background Colors - гармоничное использование палитры */
+  --color-bg-primary: #F5F1E8; /* Очень светлый бежевый для основного фона */
+  --color-bg-secondary: #ffffff; /* Белый для карточек и контента */
+  --color-bg-tertiary: #EAD8A7; /* Светлый бежевый для акцентных фонов */
+  --color-bg-accent: #E9AD74; /* Оранжевый для акцентных элементов */
+  --color-bg-card: #ffffff; /* Белый для карточек */
+  --color-bg-card-hover: #F5F1E8; /* Светлый бежевый при наведении */
+
+  /* Text Colors */
+  --color-text-primary: #1F2937; /* Темно-серый для основного текста */
+  --color-text-secondary: #4B5563; /* Средне-серый для вторичного текста */
+  --color-text-tertiary: #6B7280; /* Светло-серый для третичного текста */
+  --color-text-accent: #E9AD74; /* Оранжевый для акцентного текста */
+  --color-text-inverse: #ffffff; /* Белый текст на цветных фонах */
+  --color-text-on-beige: #1F2937; /* Темный текст на бежевом фоне */
+
+  /* Border Colors */
+  --color-border-primary: #EAC793; /* Светлый персиковый для границ */
+  --color-border-secondary: #E9BE88; /* Светлый оранжевый для границ */
+  --color-border-accent: #E9AD74; /* Оранжевый для акцентных границ */
+  --color-border-card: #EAD8A7; /* Бежевый для границ карточек */
+
+  /* Interactive Colors */
+  --color-hover: #E9B67E; /* Светлее оранжевого для hover */
+  --color-hover-light: #F5F1E8; /* Очень светлый бежевый для hover */
+  --color-active: #E9AD74; /* Оранжевый для active */
+  --color-focus: #A7DAD3; /* Бирюзовый для focus rings */
+
+  /* Status Colors (using palette) */
+  --color-success: #B4DACA; /* Мятно-зеленый */
+  --color-warning: #E9BE88; /* Светлый персиковый */
+  --color-error: #E9AD74; /* Оранжевый (можно заменить на более красный) */
+  --color-info: #A7DAD3; /* Бирюзовый */
+}
+
+/* Dark Theme - Keep existing dark colors */
+.dark {
+  /* Dark theme colors remain unchanged for now */
+  --color-bg-primary: #111827;
+  --color-bg-secondary: #1F2937;
+  --color-bg-tertiary: #374151;
+  --color-text-primary: #F9FAFB;
+  --color-text-secondary: #D1D5DB;
+  --color-text-tertiary: #9CA3AF;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

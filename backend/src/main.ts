@@ -16,9 +16,14 @@ async function bootstrap() {
     }),
   );
 
+  // CORS: comma-separated origins or '*' to allow all (e.g. for Telegram WebView)
+  const corsOrigin = process.env.CORS_ORIGIN ?? 'http://localhost:3000';
+  const originList = corsOrigin === '*' ? true : corsOrigin.split(',').map((o) => o.trim()).filter(Boolean);
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-    credentials: true,
+    origin: originList,
+    credentials: originList !== true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Telegram-Init-Data'],
   });
 
   const port = process.env.PORT || 3001;

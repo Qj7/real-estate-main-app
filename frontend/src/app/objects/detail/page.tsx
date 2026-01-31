@@ -36,23 +36,17 @@ function ObjectDetailContent() {
       setLoading(true);
       const response = await objectsApi.getById(objectId);
       setObject(response.data);
-    } catch (error) {
-      console.error('Failed to load object:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const trackEvent = async (eventType: string, objId?: string) => {
-    try {
-      await eventsApi.track({
-        event: eventType,
-        object_id: objId || objectId || undefined,
-        source: isTelegram ? 'telegram' : 'web',
-      });
-    } catch (error) {
-      console.error('Failed to track event:', error);
-    }
+  const trackEvent = (eventType: string, objId?: string) => {
+    eventsApi.track({
+      event: eventType,
+      object_id: objId || objectId || undefined,
+      source: isTelegram ? 'telegram' : 'web',
+    });
   };
 
   const handleFavoriteToggle = () => {

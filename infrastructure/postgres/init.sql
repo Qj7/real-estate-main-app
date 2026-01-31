@@ -26,7 +26,6 @@ CREATE TYPE admin_role AS ENUM (
     'Partner',
     'Developer',
     'Support',
-    'Moderator',
     'Viewer'
 );
 

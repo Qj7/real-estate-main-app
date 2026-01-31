@@ -5,11 +5,16 @@ import { ObjectCard } from '@/components/objects/ObjectCard';
 import { Object } from '@/types';
 import { objectsApi, eventsApi } from '@/lib/api';
 import { usePlatform } from '@/hooks/useTelegram';
-import { Search, Filter } from 'lucide-react';
+import { useAppStore } from '@/store/useAppStore';
+import { Search } from 'lucide-react';
+
+const hasFilters = (f: { city: string; type: string; status: string }, s: string) =>
+  !!(f.city || f.type || f.status || s);
 
 export default function ObjectsPage() {
-  const [objects, setObjects] = useState<Object[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { getCachedObjects, setObjectsCache, isObjectsCacheValid } = useAppStore();
+  const [objects, setObjects] = useState<Object[]>(() => getCachedObjects() ?? []);
+  const [loading, setLoading] = useState(!getCachedObjects()?.length);
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState({
     city: '',
@@ -23,19 +28,25 @@ export default function ObjectsPage() {
   }, [filters, search]);
 
   const loadObjects = async () => {
+    const useCache = !hasFilters(filters, search) && isObjectsCacheValid();
+    const cached = useCache ? getCachedObjects() : null;
+    if (cached?.length) {
+      setObjects(cached);
+      setLoading(false);
+    }
     try {
-      setLoading(true);
+      if (!cached?.length) setLoading(true);
       const response = await objectsApi.getAll({
         search: search || undefined,
         city: filters.city || undefined,
         type: filters.type || undefined,
         status: filters.status || undefined,
       });
-      // Response format: { data: Object[], total, page, limit, totalPages }
-      setObjects(response.data || []);
-    } catch (error) {
-      console.error('Failed to load objects:', error);
-      setObjects([]);
+      const data = response.data || [];
+      if (!hasFilters(filters, search)) setObjectsCache(data, response.total);
+      setObjects(data);
+    } catch {
+      if (!cached?.length) setObjects([]);
     } finally {
       setLoading(false);
     }

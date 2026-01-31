@@ -1,0 +1,148 @@
+@startuml admin_form_overview
+!theme plain
+title Админка: форма «Создание / Редактирование недвижимости»\nДоступ по ролям (обзор)
+
+skinparam defaultFontSize 10
+skinparam rectangle {
+  roundCorner 8
+}
+
+rectangle "Форма объекта\n(objects)" as form {
+  rectangle "Основные: title, location, city, district" as f1
+  rectangle "Тип и параметры: type, rooms, area, status" as f2
+  rectangle "Цены: price_min, price_max" as f3
+  rectangle "Владельцы: partner_id, developer_id" as f4
+  rectangle "Контент: matterport, images, description" as f5
+  rectangle "Публикация: published_status, tags, meta" as f6
+}
+
+rectangle "Partner" as r_partner #E8F5E9
+rectangle "Developer" as r_dev #E3F2FD
+rectangle "Support" as r_support #FFF3E0
+rectangle "Пользователь" as r_viewer #F5F5F5
+rectangle "Admin\nSuperAdmin" as r_admin #FCE4EC
+
+note bottom of r_partner
+  **Свои объекты**
+  Все поля редактирует.
+  partner_id = свой (фикс.)
+end note
+
+note bottom of r_dev
+  **Свои объекты**
+  Все поля редактирует.
+  developer_id = свой (фикс.)
+end note
+
+note bottom of r_support
+  **Все объекты**
+  Редактирует всё, кроме:
+  price_min/max, partner_id
+  (только чтение)
+end note
+
+note bottom of r_viewer
+  **Только чтение**
+  Создание/сохранение недоступны
+end note
+
+note bottom of r_admin
+  **Полный доступ**
+  Все поля редактирует
+end note
+
+form -[hidden]right- r_partner
+form -[hidden]right- r_dev
+form -[hidden]right- r_support
+form -[hidden]right- r_viewer
+form -[hidden]right- r_admin
+
+@enduml
+
+
+@startuml admin_form_matrix
+!theme plain
+title Матрица: роль × поле на форме объекта (редактирование недвижимости)
+
+skinparam defaultFontSize 9
+
+note as matrix
+  <b>Поле</b> | Partner | Developer | Support | Пользователь | Admin | SuperAdmin
+  ----
+  title | ✓ | ✓ | ✓ | ro | ✓ | ✓
+  location | ✓ | ✓ | ✓ | ro | ✓ | ✓
+  city | ✓ | ✓ | ✓ | ro | ✓ | ✓
+  district | ✓ | ✓ | ✓ | ro | ✓ | ✓
+  type | ✓ | ✓ | ✓ | ro | ✓ | ✓
+  rooms | ✓ | ✓ | ✓ | ro | ✓ | ✓
+  area | ✓ | ✓ | ✓ | ro | ✓ | ✓
+  price_min | ✓ | ✓ | ro | ro | ✓ | ✓
+  price_max | ✓ | ✓ | ro | ro | ✓ | ✓
+  status | ✓ | ✓ | ✓ | ro | ✓ | ✓
+  partner_id | fix | — | ro | ro | ✓ | ✓
+  developer_id | ✓ | fix | ✓ | ro | ✓ | ✓
+  matterport_link | ✓ | ✓ | ✓ | ro | ✓ | ✓
+  images | ✓ | ✓ | ✓ | ro | ✓ | ✓
+  description | ✓ | ✓ | ✓ | ro | ✓ | ✓
+  published_status | ✓ | ✓ | ✓ | ro | ✓ | ✓
+  tags | ✓ | ✓ | ✓ | ro | ✓ | ✓
+  meta | ✓ | ✓ | ✓ | ro | ✓ | ✓
+end note
+
+legend right
+  **Обозначения:**
+  ✓ — редактирование
+  ro — только чтение
+  fix — фиксировано (свой id)
+  — — скрыто / пусто
+endlegend
+
+@enduml
+
+
+@startuml admin_form_restrictions
+!theme plain
+title Разграничение доступа: поля с особыми правилами по ролям
+
+skinparam defaultFontSize 10
+
+rectangle "**Поля с особыми правилами доступа**" as restricted {
+  rectangle "**Цены**\nprice_min, price_max" as prices #FFEBEE
+  rectangle "**Партнёр**\npartner_id" as partner #FFF8E1
+  rectangle "**Застройщик**\ndeveloper_id" as developer #E8EAF6
+}
+
+rectangle "**Роли**" as roles_group #F5F5F5 {
+  rectangle "Partner" as p #C8E6C9
+  rectangle "Developer" as d #BBDEFB
+  rectangle "Support" as s #FFE0B2
+  rectangle "Пользователь" as v #EEEEEE
+  rectangle "Admin / SuperAdmin" as a #C8E6C9
+}
+
+prices -[#D32F2F]-> s : только чтение
+partner -[#F57C00]-> p : фикс. (свой)
+partner -[#F57C00]-> s : только чтение
+partner -[#616161]-> d : скрыто
+developer -[#F57C00]-> d : фикс. (свой)
+
+p -[#2E7D32]-> prices : редакт.
+p -[#2E7D32]-> developer : редакт.
+d -[#2E7D32]-> prices : редакт.
+a -[#2E7D32]-> prices : редакт.
+a -[#2E7D32]-> partner : редакт.
+a -[#2E7D32]-> developer : редакт.
+v -[#616161]-> prices : только чтение
+v -[#616161]-> partner : только чтение
+v -[#616161]-> developer : только чтение
+
+legend right
+  **Связи:**
+  редакт. — может редактировать
+  фикс. — значение фиксировано (свой id)
+  только чтение / скрыто — ограничение для роли
+  ----
+  Остальные поля формы: у Partner, Developer, Support, Admin, SuperAdmin — редактирование; у Пользователь — только чтение.
+endlegend
+
+@enduml

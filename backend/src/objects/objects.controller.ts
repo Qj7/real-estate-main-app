@@ -25,8 +25,12 @@ export class ObjectsController {
   }
 
   @Get()
-  findAll(@Query() query: QueryObjectsDto) {
-    return this.objectsService.findAll(query);
+  async findAll(@Query() query: QueryObjectsDto) {
+    try {
+      return await this.objectsService.findAll(query);
+    } catch {
+      return { data: [], total: 0, page: 1, limit: 20, totalPages: 0 };
+    }
   }
 
   @Get(':id')

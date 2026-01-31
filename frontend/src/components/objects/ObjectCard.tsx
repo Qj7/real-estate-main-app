@@ -10,9 +10,11 @@ import { formatPrice } from '@/lib/utils';
 interface ObjectCardProps {
   object: Object;
   onFavoriteToggle?: (objectId: string) => void;
+  /** Если задано, карточка ведёт на этот URL вместо /objects/detail?id=... */
+  detailHref?: string;
 }
 
-export function ObjectCard({ object, onFavoriteToggle }: ObjectCardProps) {
+export function ObjectCard({ object, onFavoriteToggle, detailHref }: ObjectCardProps) {
   const { isFavorite, toggleFavorite } = useAppStore();
   const favorite = isFavorite(object.id);
 
@@ -24,9 +26,10 @@ export function ObjectCard({ object, onFavoriteToggle }: ObjectCardProps) {
   };
 
   const mainImage = object.images?.[0] || 'https://via.placeholder.com/800x600?text=Property+Image';
+  const href = detailHref ?? `/objects/detail?id=${object.id}`;
 
   return (
-    <Link href={`/objects/detail?id=${object.id}`}>
+    <Link href={href}>
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
         <div className="relative h-48 w-full">
           <Image

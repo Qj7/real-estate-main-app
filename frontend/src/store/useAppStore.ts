@@ -5,15 +5,27 @@ import { Object } from '@/types';
 
 type Theme = 'light' | 'dark';
 
+const OBJECTS_CACHE_TTL_MS = 2 * 60 * 1000; // 2 minutes
+
+interface ObjectsCache {
+  data: Object[];
+  total?: number;
+  fetchedAt: number;
+}
+
 interface AppState {
   favorites: string[];
   theme: Theme;
+  objectsCache: ObjectsCache | null;
   addFavorite: (objectId: string) => void;
   removeFavorite: (objectId: string) => void;
   isFavorite: (objectId: string) => boolean;
   toggleFavorite: (objectId: string) => void;
   setTheme: (theme: Theme) => void;
   toggleTheme: () => void;
+  setObjectsCache: (data: Object[], total?: number) => void;
+  getCachedObjects: () => Object[] | null;
+  isObjectsCacheValid: () => boolean;
 }
 
 // Simple localStorage persistence
@@ -67,6 +79,19 @@ const saveTheme = (theme: Theme) => {
 export const useAppStore = create<AppState>((set, get) => ({
   favorites: loadFavorites(),
   theme: loadTheme(),
+  objectsCache: null,
+  setObjectsCache: (data: Object[], total?: number) => {
+    set({ objectsCache: { data, total, fetchedAt: Date.now() } });
+  },
+  getCachedObjects: () => {
+    const cache = get().objectsCache;
+    if (!cache || Date.now() - cache.fetchedAt > OBJECTS_CACHE_TTL_MS) return null;
+    return cache.data;
+  },
+  isObjectsCacheValid: () => {
+    const cache = get().objectsCache;
+    return !!(cache && Date.now() - cache.fetchedAt <= OBJECTS_CACHE_TTL_MS);
+  },
   addFavorite: (objectId: string) => {
     set((state) => {
       const newFavorites = [...state.favorites, objectId];

@@ -35,13 +35,13 @@ export default function RootLayout({
   }, []);
 
   return (
-    <html lang="ru">
+    <html lang="ru" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         {/* Telegram WebApp SDK */}
         <script src="https://telegram.org/js/telegram-web-app.js" async />
       </head>
-      <body className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <body className="min-h-screen bg-gray-50 dark:bg-gray-900" suppressHydrationWarning>
         <ThemeProvider>
           <TelegramProvider>
             <div className="flex flex-col min-h-screen">

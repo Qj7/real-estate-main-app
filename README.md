@@ -97,6 +97,7 @@ POSTGRES_DB=real_estate
 # Backend
 NODE_ENV=development
 PORT=3001
+# Для локального фронта: http://localhost:3000. Для Telegram WebView или нескольких источников: * или через запятую, например: http://localhost:3000,https://your-app.com
 CORS_ORIGIN=http://localhost:3000
 
 # Frontend
@@ -187,6 +188,30 @@ cd frontend && npm start
 
 ## 📱 Telegram MiniApp
 
+### Подключение как Mini App
+
+Добавьте в `.env`:
+
+```env
+MINI_APP_URL=https://your-app.com
+TELEGRAM_BOT_TOKEN=1234567890:AAH...
+```
+
+- **MINI_APP_URL** — URL развёрнутого фронтенда (должен быть HTTPS в проде)
+- **TELEGRAM_BOT_TOKEN** — токен бота от [@BotFather](https://t.me/BotFather)
+
+Затем выполните:
+
+```bash
+npm run setup:miniapp
+```
+
+Скрипт настроит кнопку меню бота для запуска Mini App. В @BotFather можно также настроить **Main Mini App** (*Bot Settings → Configure Mini App*).
+
+**CORS:** Добавьте `MINI_APP_URL` в `CORS_ORIGIN` (через запятую, например: `http://localhost:3000,https://your-app.com`).
+
+---
+
 Приложение автоматически определяет, запущено ли оно в Telegram, и адаптирует UI:
 
 - Применяет цвета темы Telegram
@@ -205,7 +230,7 @@ cd frontend && npm start
 
 - Валидация всех входных данных через class-validator
 - CORS настроен для безопасности
-- Подготовка к RBAC системе (SuperAdmin, Partner, Support)
+- Подготовка к RBAC: роли администраторов (SuperAdmin, Admin, Partner, Developer, Support, Viewer — Пользователь) и пользователи MiniApp. Полное описание ролей и доступов — [docs/ROLES.md](docs/ROLES.md). Схема ролей и операций: [docs/roles.puml](docs/roles.puml)
 
 ## 📝 Разработка
 

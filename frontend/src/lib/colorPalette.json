@@ -1,0 +1,60 @@
+{
+  "name": "Real Estate App Color Palette",
+  "description": "Warm earth tones and cool muted tones palette",
+  "colors": {
+    "primary": {
+      "orange": "#E9AD74",
+      "beige": "#EAD8A7",
+      "teal": "#A7DAD3"
+    },
+    "orange": {
+      "100": "#EAD8A7",
+      "200": "#EACF9D",
+      "300": "#EAC793",
+      "400": "#E9BE88",
+      "500": "#E9B67E",
+      "600": "#E9AD74"
+    },
+    "teal": {
+      "100": "#EAD8A7",
+      "200": "#DDD8B0",
+      "300": "#CFD9B9",
+      "400": "#C2D9C1",
+      "500": "#B4DACA",
+      "600": "#A7DAD3"
+    },
+    "warm": {
+      "light": "#EAD8A7",
+      "medium": "#E9AD74",
+      "dark": "#E9B67E"
+    },
+    "cool": {
+      "light": "#A7DAD3",
+      "medium": "#B4DACA",
+      "dark": "#C2D9C1"
+    },
+    "neutral": {
+      "lightest": "#EAD8A7",
+      "light": "#EACF9D",
+      "medium": "#EAC793"
+    }
+  },
+  "allUniqueColors": [
+    "#E9AD74",
+    "#EAD8A7",
+    "#A7DAD3",
+    "#E9B67E",
+    "#E9BE88",
+    "#EAC793",
+    "#EACF9D",
+    "#B4DACA",
+    "#C2D9C1",
+    "#CFD9B9",
+    "#DDD8B0"
+  ],
+  "categories": {
+    "main": ["#E9AD74", "#EAD8A7", "#A7DAD3"],
+    "orangeFamily": ["#E9AD74", "#E9B67E", "#E9BE88", "#EAC793", "#EACF9D", "#EAD8A7"],
+    "tealFamily": ["#A7DAD3", "#B4DACA", "#C2D9C1", "#CFD9B9", "#DDD8B0", "#EAD8A7"]
+  }
+}

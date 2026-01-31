@@ -1,0 +1,116 @@
+@startuml roles_overview
+!theme plain
+title Роли в системе: кто есть кто
+
+skinparam defaultFontSize 11
+
+rectangle "Приложение\n(MiniApp / веб)" as app_zone {
+  actor User as user_app ["Пользователь приложения"]
+  note right of user_app
+    Поиск, избранное, шаринг в TG,
+    подписки, написать/позвонить.
+    Без привязки — только просмотр.
+    Хранение: miniapp_users
+  end note
+}
+
+rectangle "Админ-панель\n(admin_users)" as admin_zone {
+  actor Partner as role_partner ["Partner\nПартнер"]
+  actor Developer as role_dev ["Developer\nЗастройщик"]
+  actor Support as role_support ["Support\nТехподдержка"]
+  actor Viewer as role_viewer ["Viewer\nПользователь"]
+  actor Admin as role_admin ["Admin\nАдмин"]
+  actor SuperAdmin as role_super ["SuperAdmin\nСуперадмин"]
+}
+
+note bottom of role_partner
+  Только свои объекты/метрики/ссылки.
+  Уровни: Free (5) / Business (20) / VIP (50)
+end note
+note bottom of role_dev
+  Только свои объекты (developer_tour)
+end note
+note bottom of role_support
+  Чтение всего + модерация, чаты, бан.
+  Не может: цены, партнёр, system settings
+end note
+note bottom of role_viewer
+  Только чтение всего (роль Пользователь)
+end note
+note bottom of role_admin
+  Всё кроме system settings
+end note
+note bottom of role_super
+  Полный доступ
+end note
+
+app_zone -[hidden]right- admin_zone
+
+@enduml
+
+
+@startuml roles_matrix
+!theme plain
+title Матрица доступа: роль × операция
+
+skinparam defaultFontSize 10
+
+' Матрица: роль × операция (✓ = разрешено)
+|= Роль |= READ own |= READ full |= CUD own |= CUD full |= PUBLISH |= ANALYTICS own |= ANALYTICS full |= MODERATE |= MANAGE USERS |= IMPORT/EXPORT |= SYSTEM SETTINGS |
+| Partner | ✓ | | ✓ | | | ✓ | | | | | |
+| Developer | ✓ | | ✓ | | | | | | | | |
+| Support | | ✓ | | | ✓ | | | ✓ | ✓ | | |
+| Viewer | | ✓ | | | | | | | | | |
+| Admin | | ✓ | | ✓ | ✓ | | ✓ | ✓ | ✓ | ✓ | |
+| SuperAdmin | | ✓ | | ✓ | ✓ | | ✓ | ✓ | ✓ | ✓ | ✓ |
+
+legend right
+  **Scope:**
+  own = только свои данные (partner_id / developer_id = свой)
+  full = все данные
+  **Support:** PUBLISH = смена статусов/модерация, без смены цен и партнёра
+endlegend
+
+@enduml
+
+
+@startuml partner_tiers
+!theme plain
+title Уровни партнёра (Partner)
+
+skinparam defaultFontSize 11
+
+rectangle "Partner" as partner_role
+
+rectangle "Free" as tier_free {
+  rectangle "Лимит: 5 объявлений" as f1
+  rectangle "Свои объявления: создание, редактирование, удаление" as f2
+  rectangle "Доступ к чату\n(если чат инициирован пользователем)" as f3
+}
+
+rectangle "Business" as tier_business {
+  rectangle "Лимит: 20 объявлений" as b1
+  rectangle "Всё из Free" as b2
+  rectangle "Show room: создание и редактирование" as b3
+  rectangle "Несколько аккаунтов для постинга" as b4
+}
+
+rectangle "VIP" as tier_vip {
+  rectangle "Лимит: 50 объявлений" as v1
+  rectangle "Всё из Business" as v2
+  rectangle "Личный менеджер" as v3
+  rectangle "Доп. услуги (не влияют на функционал)" as v4
+}
+
+partner_role --> tier_free
+partner_role --> tier_business
+partner_role --> tier_vip
+
+tier_free -[hidden]down- tier_business
+tier_business -[hidden]down- tier_vip
+
+note bottom
+  В БД уровень партнёра пока не заведён (запланировано)
+end note
+
+@enduml

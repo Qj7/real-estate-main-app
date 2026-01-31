@@ -1,20 +1,44 @@
-import { Controller, Post, Get, Body, Query } from '@nestjs/common';
+import { Controller, Post, Get, Body, Query, Headers } from '@nestjs/common';
 import { EventsService } from './events.service';
+import { TelegramService } from '../telegram/telegram.service';
 import { CreateEventDto } from './dto/create-event.dto';
+
+const INIT_DATA_HEADER = 'x-telegram-init-data';
 
 @Controller('events')
 export class EventsController {
-  constructor(private readonly eventsService: EventsService) {}
+  constructor(
+    private readonly eventsService: EventsService,
+    private readonly telegramService: TelegramService,
+  ) {}
 
   @Post()
-  create(@Body() createEventDto: CreateEventDto) {
-    // TODO: Extract user ID from Telegram WebApp initData or session
-    return this.eventsService.create(createEventDto);
+  async create(
+    @Body() createEventDto: CreateEventDto,
+    @Headers(INIT_DATA_HEADER) initData?: string,
+  ) {
+    try {
+      let userId: string | undefined;
+      if (initData && this.telegramService.isConfigured()) {
+        const validated = this.telegramService.validateInitData(initData);
+        if (validated?.user) {
+          userId = String(validated.user.id);
+        }
+      }
+      return await this.eventsService.create(createEventDto, userId);
+    } catch {
+      // DB недоступна или таблица отсутствует — аналитика не критична, отвечаем 200
+      return { ok: true };
+    }
   }
 
   @Get()
-  findAll(@Query() filters: any) {
-    return this.eventsService.findAll(filters);
+  async findAll(@Query() filters: any) {
+    try {
+      return await this.eventsService.findAll(filters);
+    } catch {
+      return [];
+    }
   }
 }
 
