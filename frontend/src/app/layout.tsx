@@ -5,6 +5,8 @@ import './globals.css'
 import { TelegramProvider } from '@/components/TelegramProvider'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { Header } from '@/components/layout/Header'
+import { BottomNav } from '@/components/layout/BottomNav'
+import { MainContent } from '@/components/layout/MainContent'
 
 export default function RootLayout({
   children,
@@ -46,7 +48,8 @@ export default function RootLayout({
           <TelegramProvider>
             <div className="flex flex-col min-h-screen">
               <Header />
-              <main className="flex-1">{children}</main>
+              <MainContent>{children}</MainContent>
+              <BottomNav />
             </div>
           </TelegramProvider>
         </ThemeProvider>
