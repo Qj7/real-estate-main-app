@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Heart, Building2 } from 'lucide-react';
-import { usePlatform } from '@/hooks/useTelegram';
 import { useAppStore } from '@/store/useAppStore';
 
 const navItems = [
@@ -14,7 +13,6 @@ const navItems = [
 
 export function BottomNav() {
   const pathname = usePathname();
-  const { isTelegram } = usePlatform();
   const favorites = useAppStore((state) => state.favorites);
 
   const getBadge = (key: 'favorites') => {
@@ -24,11 +22,8 @@ export function BottomNav() {
 
   return (
     <nav
-      className={`
-        fixed bottom-0 left-0 right-0 z-50
-        bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700
-        ${isTelegram ? 'flex' : 'flex md:hidden'}
-      `}
+      className="fixed bottom-0 left-0 right-0 z-50 flex md:hidden
+        bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700"
       style={{
         paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0px))',
       }}

@@ -40,8 +40,29 @@ export default function RootLayout({
     <html lang="ru" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
-        {/* Telegram WebApp SDK */}
+        {/* Telegram WebApp SDK — expand на весь экран сразу после загрузки */}
         <script src="https://telegram.org/js/telegram-web-app.js" async />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+(function() {
+  function init() {
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
+      return;
+    }
+    setTimeout(init, 10);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+            `.trim(),
+          }}
+        />
       </head>
       <body className="min-h-screen bg-gray-50 dark:bg-gray-900" suppressHydrationWarning>
         <ThemeProvider>
